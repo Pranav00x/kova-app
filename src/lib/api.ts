@@ -1,0 +1,37 @@
+const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4000";
+
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}) as Record<string, unknown>);
+    throw new Error(typeof body.error === "string" ? body.error : `request_failed_${res.status}`);
+  }
+
+  return res.json() as Promise<T>;
+}
+
+export interface OtpVerifyResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: { id: string; kycStatus: string };
+}
+
+export const api = {
+  requestOtp: (identifier: string) =>
+    request<{ status: string }>("/auth/otp/request", {
+      method: "POST",
+      body: JSON.stringify({ identifier }),
+    }),
+  verifyOtp: (identifier: string, code: string) =>
+    request<OtpVerifyResponse>("/auth/otp/verify", {
+      method: "POST",
+      body: JSON.stringify({ identifier, code }),
+    }),
+};
