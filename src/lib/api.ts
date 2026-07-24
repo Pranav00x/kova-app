@@ -31,6 +31,13 @@ export interface Wallet {
   chain: string;
 }
 
+export interface VaultStats {
+  deployed: boolean;
+  totalAssets: string;
+  totalShares: string;
+  sharePrice: string;
+}
+
 export const api = {
   requestOtp: (identifier: string) =>
     request<{ status: string }>("/auth/otp/request", {
@@ -48,4 +55,7 @@ export const api = {
       { method: "POST", body: JSON.stringify({ ownerAddress }) },
       accessToken
     ),
+  getVaultStats: () => request<VaultStats>("/vault/stats"),
+  getMyShares: (accessToken: string) =>
+    request<{ shares: string }>("/vault/my-shares", {}, accessToken),
 };

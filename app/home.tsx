@@ -1,13 +1,35 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useSession } from "@/store/session";
+import { api, type VaultStats } from "@/lib/api";
 
 function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
 }
 
+function formatUsdc(raw: string): string {
+  return (Number(raw) / 1e6).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 export default function Home() {
   const kycStatus = useSession((s) => s.kycStatus);
   const smartAccountAddress = useSession((s) => s.smartAccountAddress);
+  const accessToken = useSession((s) => s.accessToken);
+
+  const [vaultStats, setVaultStats] = useState<VaultStats | null>(null);
+  const [myShares, setMyShares] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.getVaultStats().then(setVaultStats).catch(() => setVaultStats(null));
+  }, []);
+
+  useEffect(() => {
+    if (!accessToken) return;
+    api
+      .getMyShares(accessToken)
+      .then((res) => setMyShares(res.shares))
+      .catch(() => setMyShares(null));
+  }, [accessToken]);
 
   return (
     <View style={styles.container}>
@@ -21,13 +43,15 @@ export default function Home() {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardLabel}>Balance</Text>
-        <Text style={styles.cardValue}>$0.00 USDC</Text>
+        <Text style={styles.cardLabel}>Your vault balance</Text>
+        <Text style={styles.cardValue}>{myShares ? `$${formatUsdc(myShares)} USDC` : "$0.00 USDC"}</Text>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardLabel}>Vault APY</Text>
-        <Text style={styles.cardValue}>—</Text>
+        <Text style={styles.cardLabel}>Vault TVL</Text>
+        <Text style={styles.cardValue}>
+          {vaultStats?.deployed ? `$${formatUsdc(vaultStats.totalAssets)} USDC` : "Not deployed yet"}
+        </Text>
       </View>
 
       <View style={styles.card}>
