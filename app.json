@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "Kova",
+    "slug": "kova-app",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "scheme": "kova",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "money.kova.app"
+    },
+    "android": {
+      "package": "money.kova.app"
+    },
+    "plugins": ["expo-router"]
+  }
+}
