@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
 import { useSession } from "@/store/session";
 import { api, type VaultStats } from "@/lib/api";
 
@@ -58,6 +59,10 @@ export default function Home() {
         <Text style={styles.cardLabel}>KYC status</Text>
         <Text style={styles.cardValue}>{kycStatus ?? "pending"}</Text>
       </View>
+
+      <Pressable style={styles.sendButton} onPress={() => router.push("/send")}>
+        <Text style={styles.sendButtonText}>Send USDC</Text>
+      </Pressable>
     </View>
   );
 }
@@ -89,5 +94,17 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 20,
     fontWeight: "600",
+  },
+  sendButton: {
+    backgroundColor: "#00C853",
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  sendButtonText: {
+    color: "#0A0A0A",
+    fontSize: 16,
+    fontWeight: "700",
   },
 });

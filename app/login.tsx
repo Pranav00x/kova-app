@@ -38,7 +38,7 @@ export default function Login() {
       const { wallet } = await api.createWallet(owner.address, res.accessToken);
       setWallet(wallet.smart_account_address);
 
-      router.replace("/home");
+      router.replace(res.user.kycStatus === "pending" ? "/kyc" : "/home");
     } catch (err) {
       setError(err instanceof Error ? err.message : "invalid_code");
     } finally {

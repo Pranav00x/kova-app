@@ -7,6 +7,7 @@ interface SessionState {
   smartAccountAddress: string | null;
   setSession: (params: { accessToken: string; userId: string; kycStatus: string }) => void;
   setWallet: (smartAccountAddress: string) => void;
+  setKycStatus: (kycStatus: string) => void;
   clearSession: () => void;
 }
 
@@ -17,5 +18,6 @@ export const useSession = create<SessionState>((set) => ({
   smartAccountAddress: null,
   setSession: ({ accessToken, userId, kycStatus }) => set({ accessToken, userId, kycStatus }),
   setWallet: (smartAccountAddress) => set({ smartAccountAddress }),
+  setKycStatus: (kycStatus) => set({ kycStatus }),
   clearSession: () => set({ accessToken: null, userId: null, kycStatus: null, smartAccountAddress: null }),
 }));

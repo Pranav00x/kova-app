@@ -38,6 +38,11 @@ export interface VaultStats {
   sharePrice: string;
 }
 
+export interface LookupResult {
+  userId: string;
+  smartAccountAddress: string;
+}
+
 export const api = {
   requestOtp: (identifier: string) =>
     request<{ status: string }>("/auth/otp/request", {
@@ -58,4 +63,16 @@ export const api = {
   getVaultStats: () => request<VaultStats>("/vault/stats"),
   getMyShares: (accessToken: string) =>
     request<{ shares: string }>("/vault/my-shares", {}, accessToken),
+  submitKyc: (accessToken: string) =>
+    request<{ user: { id: string; kyc_status: string } }>(
+      "/kyc/submit",
+      { method: "POST" },
+      accessToken
+    ),
+  lookupUser: (identifier: string, accessToken: string) =>
+    request<LookupResult>(
+      `/users/lookup?identifier=${encodeURIComponent(identifier)}`,
+      {},
+      accessToken
+    ),
 };
