@@ -1,12 +1,24 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useSession } from "@/store/session";
 
+function shortenAddress(address: string): string {
+  return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
 export default function Home() {
   const kycStatus = useSession((s) => s.kycStatus);
+  const smartAccountAddress = useSession((s) => s.smartAccountAddress);
 
   return (
     <View style={styles.container}>
       <Text style={styles.greeting}>Welcome to Kova</Text>
+
+      <View style={styles.card}>
+        <Text style={styles.cardLabel}>Smart account</Text>
+        <Text style={styles.cardValue}>
+          {smartAccountAddress ? shortenAddress(smartAccountAddress) : "Creating…"}
+        </Text>
+      </View>
 
       <View style={styles.card}>
         <Text style={styles.cardLabel}>Balance</Text>

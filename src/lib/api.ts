@@ -1,10 +1,11 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:4000";
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+async function request<T>(path: string, options: RequestInit = {}, accessToken?: string): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       ...options.headers,
     },
   });
@@ -23,6 +24,13 @@ export interface OtpVerifyResponse {
   user: { id: string; kycStatus: string };
 }
 
+export interface Wallet {
+  id: string;
+  user_id: string;
+  smart_account_address: string;
+  chain: string;
+}
+
 export const api = {
   requestOtp: (identifier: string) =>
     request<{ status: string }>("/auth/otp/request", {
@@ -34,4 +42,10 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ identifier, code }),
     }),
+  createWallet: (ownerAddress: string, accessToken: string) =>
+    request<{ wallet: Wallet }>(
+      "/wallet",
+      { method: "POST", body: JSON.stringify({ ownerAddress }) },
+      accessToken
+    ),
 };

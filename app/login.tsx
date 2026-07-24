@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, Pressable, ActivityIndicator } from 
 import { router } from "expo-router";
 import { api } from "@/lib/api";
 import { useSession } from "@/store/session";
+import { getOrCreateOwnerAccount } from "@/lib/ownerAccount";
 
 export default function Login() {
   const [step, setStep] = useState<"identifier" | "code">("identifier");
@@ -11,6 +12,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const setSession = useSession((s) => s.setSession);
+  const setWallet = useSession((s) => s.setWallet);
 
   const handleRequestOtp = async () => {
     setError(null);
@@ -31,6 +33,11 @@ export default function Login() {
     try {
       const res = await api.verifyOtp(identifier, code);
       setSession({ accessToken: res.accessToken, userId: res.user.id, kycStatus: res.user.kycStatus });
+
+      const owner = await getOrCreateOwnerAccount();
+      const { wallet } = await api.createWallet(owner.address, res.accessToken);
+      setWallet(wallet.smart_account_address);
+
       router.replace("/home");
     } catch (err) {
       setError(err instanceof Error ? err.message : "invalid_code");
