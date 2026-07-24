@@ -43,6 +43,12 @@ export interface LookupResult {
   smartAccountAddress: string;
 }
 
+export interface CategoryBreakdown {
+  category: string;
+  totalUsdc: string;
+  transactionCount: string;
+}
+
 export const api = {
   requestOtp: (identifier: string) =>
     request<{ status: string }>("/auth/otp/request", {
@@ -75,4 +81,6 @@ export const api = {
       {},
       accessToken
     ),
+  getMonthlyAnalytics: (accessToken: string) =>
+    request<{ breakdown: CategoryBreakdown[] }>("/transactions/analytics/monthly", {}, accessToken),
 };

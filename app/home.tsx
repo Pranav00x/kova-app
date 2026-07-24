@@ -34,7 +34,12 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.greeting}>Welcome to Kova</Text>
+      <View style={styles.headerRow}>
+        <Text style={styles.greeting}>Welcome to Kova</Text>
+        <Pressable onPress={() => router.push("/settings")}>
+          <Text style={styles.headerLink}>Settings</Text>
+        </Pressable>
+      </View>
 
       <View style={styles.card}>
         <Text style={styles.cardLabel}>Smart account</Text>
@@ -63,6 +68,10 @@ export default function Home() {
       <Pressable style={styles.sendButton} onPress={() => router.push("/send")}>
         <Text style={styles.sendButtonText}>Send USDC</Text>
       </Pressable>
+
+      <Pressable onPress={() => router.push("/analytics")}>
+        <Text style={styles.analyticsLink}>View spend analytics →</Text>
+      </Pressable>
     </View>
   );
 }
@@ -74,11 +83,20 @@ const styles = StyleSheet.create({
     padding: 24,
     gap: 16,
   },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
   greeting: {
     color: "#FFFFFF",
     fontSize: 24,
     fontWeight: "700",
-    marginBottom: 8,
+  },
+  headerLink: {
+    color: "#888888",
+    fontSize: 14,
   },
   card: {
     backgroundColor: "#1A1A1A",
@@ -106,5 +124,10 @@ const styles = StyleSheet.create({
     color: "#0A0A0A",
     fontSize: 16,
     fontWeight: "700",
+  },
+  analyticsLink: {
+    color: "#00C853",
+    fontSize: 14,
+    textAlign: "center",
   },
 });
